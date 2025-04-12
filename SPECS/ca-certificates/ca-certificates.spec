@@ -165,7 +165,7 @@ mkdir -p -m 755 %{buildroot}%{pkidir}/java
 mkdir -p -m 755 %{buildroot}%{_sysconfdir}/ssl
 mkdir -p -m 755 %{buildroot}%{high_pri_source_dir}
 mkdir -p -m 755 %{buildroot}%{high_pri_source_dir}/anchors
-mkdir -p -m 755 %{buildroot}%{high_pri_source_dir}/blocklist
+mkdir -p -m 755 %{buildroot}%{high_pri_source_dir}/blacklist
 mkdir -p -m 755 %{buildroot}%{catrustdir}/extracted
 mkdir -p -m 755 %{buildroot}%{catrustdir}/extracted/pem
 mkdir -p -m 755 %{buildroot}%{catrustdir}/extracted/openssl
@@ -173,7 +173,7 @@ mkdir -p -m 755 %{buildroot}%{catrustdir}/extracted/java
 mkdir -p -m 755 %{buildroot}%{catrustdir}/extracted/edk2
 mkdir -p -m 755 %{buildroot}%{low_pri_source_dir}
 mkdir -p -m 755 %{buildroot}%{low_pri_source_dir}/anchors
-mkdir -p -m 755 %{buildroot}%{low_pri_source_dir}/blocklist
+mkdir -p -m 755 %{buildroot}%{low_pri_source_dir}/blacklist
 mkdir -p -m 755 %{buildroot}%{_bindir}
 mkdir -p -m 755 %{buildroot}%{_mandir}/man8
 
@@ -233,6 +233,10 @@ ln -s %{catrustdir}/extracted/openssl/%{openssl_format_trust_bundle} \
     %{buildroot}%{pkidir}/tls/certs/%{openssl_format_trust_bundle}
 ln -s %{catrustdir}/extracted/%{java_bundle} \
     %{buildroot}%{pkidir}/%{java_bundle}
+
+# Supporting p11-kit's directory re-name in version 0.24.0.
+ln -s blacklist %{buildroot}%{_datadir}/pki/ca-trust-source/blocklist
+ln -s blacklist %{buildroot}%{catrustdir}/source/blocklist
 
 # Version 3.0.0-9.azl3 replaced two symbolic links with actual directories.
 # It also removed the old 'blacklist' directories.
@@ -328,7 +332,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 %dir %{_datadir}/pki
 %dir %{low_pri_source_dir}
 %dir %{low_pri_source_dir}/anchors
-%dir %{low_pri_source_dir}/blocklist
+%dir %{low_pri_source_dir}/blacklist
 %dir %{_sysconfdir}/ssl
 %dir %{catrustdir}
 %dir %{catrustdir}/extracted
@@ -338,7 +342,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 %dir %{catrustdir}/extracted/openssl
 %dir %{high_pri_source_dir}
 %dir %{high_pri_source_dir}/anchors
-%dir %{high_pri_source_dir}/blocklist
+%dir %{high_pri_source_dir}/blacklist
 %dir %{pkidir}/java
 %dir %{pkidir}/tls
 %dir %{pkidir}/tls/certs
@@ -366,7 +370,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 
 %changelog
 * Mon Apr 07 2025 Pawel Winogrodzki <pawelwi@microsoft.com> - 3.0.0-9
-- Remove outdated 'blacklist' folders.
+- Adding a %%pretrans script as a bridge before we remove the symbolic links.
 
 * Wed Dec 11 2024 Pawel Winogrodzki <pawelwi@microsoft.com> - 3.0.0-8
 - Update adding Microsoft distrusted CAs.
