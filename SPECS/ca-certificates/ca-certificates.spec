@@ -238,34 +238,51 @@ ln -s %{catrustdir}/extracted/%{java_bundle} \
 ln -s blacklist %{buildroot}%{_datadir}/pki/ca-trust-source/blocklist
 ln -s blacklist %{buildroot}%{catrustdir}/source/blocklist
 
-# Version 3.0.0-9.azl3 replaced two symbolic links with actual directories.
-# It also removed the old 'blacklist' directories.
-# For upgrades from older versions, we need to thus:
-#   1. Remove the symbolic link to avoid conflicts during installation.
-#   2. Move the old blocked certificates to the new location.
-#
-# For more info, see: https://docs.fedoraproject.org/en-US/packaging-guidelines/Directory_Replacement/
+# Creating the ghost '.rpmmoved' directories
+mkdir -p %{buildroot}%{low_pri_source_dir}/blocklist.rpmmoved
+mkdir -p %{buildroot}%{high_pri_source_dir}/blocklist.rpmmoved
+
+# Handle the case where 'blocklist' exists as directory instead of symlink
 %pretrans shared -p <lua>
--- Not using macros in paths on purpose in case they changed since version 3.0.0-8.azl3 was built.
-local old_paths = {
-  ["/usr/share/pki/ca-trust-source/blacklist"] = "/usr/share/pki/ca-trust-source/blocklist",
-  ["/etc/pki/ca-trust/source/blacklist"] = "/etc/pki/ca-trust/source/blocklist",
+-- Define the paths to directories being replaced.
+-- DO NOT add a trailing slash at the end.
+paths = {
+  "%{low_pri_source_dir}/blocklist",
+  "%{high_pri_source_dir}/blocklist",
 }
 
--- Mapping to move old directory with blocked certificates to the new location.
--- This is needed to avoid breaking the user's configuration.
-local old_to_new_dir = {
-  ["/usr/share/pki/ca-trust-source/blacklist"] = "%{low_pri_source_dir}/blocklist",
-  ["/etc/pki/ca-trust/source/blacklist"] = "%{high_pri_source_dir}/blocklist",
-}
-
-for old_dir, link_path in pairs(old_paths) do
-  st = posix.stat(link_path)
-  if st and st.type == "link" then
-    os.remove(link_path)
-    os.rename(old_dir, old_to_new_dir[old_dir])
+for _, path in ipairs(paths) do
+  st = posix.stat(path)
+  if st and st.type == "directory" then
+    status = os.rename(path, path .. ".rpmmoved")
+    if not status then
+      suffix = 0
+      while not status do
+        suffix = suffix + 1
+        status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
+      end
+      os.rename(path, path .. ".rpmmoved")
+    end
   end
 end
+
+%post shared
+# After creating the symlinks, move any content from .rpmmoved directories
+# to the blacklist directories the symlinks now point to
+for dir in "%{low_pri_source_dir}/blocklist.rpmmoved" "%{high_pri_source_dir}/blocklist.rpmmoved"; do
+  if ! [ -d "$dir" ]; then
+    continue
+  fi
+
+  # The symlink points to blacklist, get the target dir
+  target_dir=$(dirname "$dir")/blacklist
+  # Move all files from .rpmmoved to the blacklist directory
+  find "$dir" -type f -exec mv -t "$target_dir" {} \;
+  # Remove the now-empty .rpmmoved directory
+  rm -rf "$dir"
+done
+# Run refresh bundles to ensure proper certificate setup
+%{refresh_bundles}
 
 %post
 %{refresh_bundles}
@@ -316,10 +333,8 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 %{pkidir}/%{java_bundle}
 
 # symlink directory
-%{_datadir}/pki/ca-trust-source/blocklist
 %{_sysconfdir}/ssl/certs
 %{_libdir}/ssl/certs
-%{catrustdir}/source/blocklist
 
 # README files
 %{low_pri_source_dir}/README
@@ -358,6 +373,8 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 %ghost %{catrustdir}/extracted/openssl/%{openssl_format_trust_bundle}
 %ghost %{catrustdir}/extracted/%{java_bundle}
 %ghost %{catrustdir}/extracted/edk2/cacerts.bin
+%ghost %{low_pri_source_dir}/blocklist.rpmmoved
+%ghost %{high_pri_source_dir}/blocklist.rpmmoved
 
 %files tools
 %defattr(-,root,root)
@@ -600,7 +617,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 - Set P11_KIT_NO_USER_CONFIG=1 to prevent p11-kit from reading user
   configuration files (rhbz#1478172).
 
-* Wed Jul 26 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2017.2.16-3
+* Wed Jul 26 2017 Fedora Release Engineering <releng@lists.fedoraproject.org> - 2017.2.16-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
 * Wed Jul 19 2017 Kai Engert <kaie@redhat.com> - 2017.2.16-2
@@ -622,7 +639,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 - Changed update-ca-trust to add comments to extracted PEM format files.
 - Added an utility to help with comparing output of the trust dump command.
 
-* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2017.2.11-3
+* Fri Feb 10 2017 Fedora Release Engineering <releng@lists.fedoraproject.org> - 2017.2.11-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
 * Wed Jan 11 2017 Kai Engert <kaie@redhat.com> - 2017.2.11-2
@@ -654,7 +671,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 * Wed Mar 16 2016 Kai Engert <kaie@redhat.com> - 2016.2.7-2
 - Update to CKBI 2.7 from NSS 3.23 with legacy modifications
 
-* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2015.2.6-3
+* Wed Feb 03 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2015.2.6-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
 * Mon Nov 23 2015 Kai Engert <kaie@redhat.com> - 2015.2.6-2
@@ -770,7 +787,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
   (thanks to Michael Shuler for suggesting to do so)
 - Update source URLs and comments, add source file for version information.
 
-* Tue Mar 19 2013 Kai Engert <kaie@redhat.com> - 2012.87-11
+* Tue Mar 19 2013 Kai Engert <kaie@redhat.com> - 2012.87-9
 - adjust to changed and new functionality provided by p11-kit 0.17.3
 - updated READMEs to describe the new directory-specific treatment of files
 - ship a new file that contains certificates with neutral trust
@@ -779,7 +796,6 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
   Mozilla CA list
 - adjust the build script to dynamically produce most of above files
 - add and own the anchors and blacklist subdirectories
-- file generate-cacerts.pl is no longer required
 
 * Fri Mar 08 2013 Kai Engert <kaie@redhat.com> - 2012.87-9
 - Major rework for the Fedora SharedSystemCertificates feature.
@@ -897,7 +913,7 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 - Change generate-cacerts.pl to produce pretty aliases.
 
 * Mon Jun  2 2008 Joe Orton <jorton@redhat.com> 2008-5
-- include /etc/pki/tls/cert.pem symlink to ca-bundle.crt
+- include /etc/pki/tls/certs/ca-bundle.trust.crt
 
 * Tue May 27 2008 Joe Orton <jorton@redhat.com> 2008-4
 - use package name for temp dir, recreate it in prep
