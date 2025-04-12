@@ -316,8 +316,10 @@ rm -f %{pkidir}/tls/certs/*.{0,pem}
 %{pkidir}/%{java_bundle}
 
 # symlink directory
+%{_datadir}/pki/ca-trust-source/blocklist
 %{_sysconfdir}/ssl/certs
 %{_libdir}/ssl/certs
+%{catrustdir}/source/blocklist
 
 # README files
 %{low_pri_source_dir}/README
