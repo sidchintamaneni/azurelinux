@@ -1,7 +1,6 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 %define version_main %(echo %{version} | cut -d. -f-2)
-%global so_version_1 310
-%global so_version_2 311
+%global so_version 310
 %global with_mpich 0
 %global with_openmpi 0
 %if %{with_mpich}
@@ -12,17 +11,16 @@
 %endif
 Summary:        A general purpose library and file format for storing scientific data
 Name:           hdf5
-Version:        1.14.4
-Release:        2%{?dist}
+Version:        1.14.4.3
+Release:        1%{?dist}
 License:        BSD
 Vendor:         Microsoft Corporation
-Distribution:   Mariner
+Distribution:   Azure Linux
 URL:            https://portal.hdfgroup.org/display/HDF5/HDF5
-Source0:        https://github.com/hdfgroup/hdf5/releases/download/%{name}_%{version}.2/%{name}-%{version}-2.tar.gz
+Source0:        https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.4/src/hdf5-1.14.4-3.tar.gz#/%{name}-%{version}.tar.gz
 Source1:        h5comp
 Patch0:         hdf5-build.patch
 Patch1:         hdf5-wrappers.patch
-Patch2:         add_support_for_aarch64.patch
 
 # For patches/rpath
 BuildRequires:  automake
@@ -128,7 +126,7 @@ HDF5 parallel openmpi static libraries
 
 
 %prep
-%autosetup -p1 -n %{name}-%{version}-2
+%autosetup -n %{name}-1.14.4-3 -p1
 
 # Force shared by default for compiler wrappers (bug #1266645)
 sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
@@ -295,12 +293,12 @@ done
 %{_bindir}/mirror_server
 %{_bindir}/mirror_server_stop
 %{_libdir}/hdf5/
-%{_libdir}/libhdf5.so.%{so_version_2}*
-%{_libdir}/libhdf5_cpp.so.%{so_version_1}*
-%{_libdir}/libhdf5_fortran.so.%{so_version_2}*
-%{_libdir}/libhdf5hl_fortran.so.%{so_version_1}*
-%{_libdir}/libhdf5_hl.so.%{so_version_1}*
-%{_libdir}/libhdf5_hl_cpp.so.%{so_version_1}*
+%{_libdir}/libhdf5.so.%{so_version}*
+%{_libdir}/libhdf5_cpp.so.%{so_version}*
+%{_libdir}/libhdf5_fortran.so.%{so_version}*
+%{_libdir}/libhdf5hl_fortran.so.%{so_version}*
+%{_libdir}/libhdf5_hl.so.%{so_version}*
+%{_libdir}/libhdf5_hl_cpp.so.%{so_version}*
 
 %files devel
 %{macrosdir}/macros.hdf5
@@ -347,7 +345,7 @@ done
 %{_libdir}/mpich/bin/mirror_server_stop
 %{_libdir}/mpich/bin/ph5diff
 %{_libdir}/mpich/hdf5/
-%{_libdir}/mpich/lib/*.so.%{so_version_1}*
+%{_libdir}/mpich/lib/*.so.%{so_version}*
 
 %files mpich-devel
 %{_includedir}/mpich-%{_arch}
@@ -365,7 +363,7 @@ done
 %if %{with_openmpi}
 %files openmpi
 %license COPYING
-%doc MANIFEST README.txt release_docs/RELEASE.txt
+%doc README.md release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_libdir}/openmpi/bin/gif2h5
 %{_libdir}/openmpi/bin/h52gif
@@ -391,7 +389,7 @@ done
 %{_libdir}/openmpi/bin/mirror_server_stop
 %{_libdir}/openmpi/bin/ph5diff
 %{_libdir}/openmpi/hdf5/
-%{_libdir}/openmpi/lib/*.so.%{so_version_1}*
+%{_libdir}/openmpi/lib/*.so.%{so_version}*
 
 %files openmpi-devel
 %{_includedir}/openmpi-%{_arch}
@@ -410,9 +408,9 @@ done
 
 
 %changelog
-* Wed Apr 16 2025 Kanishk Bansal <kanbansal@microsoft.com> - 1.14.4-2
+* Wed Apr 16 2025 Kanishk Bansal <kanbansal@microsoft.com> - 1.14.4.3-1
+- Upgrade to v1.14.4.3 to add support for aarch64 _Float16 16-bit floating point type
 - Remove the _FLOAT16 temporary work-around for hdf5 arm64 builds
-- Add Patch to add support for aarch64 _Float16 16-bit floating point type
 
 * Mon May 20 2024 George Mileka <gmileka@microsoft.com> - 1.14.4-1
 - Upgrade to 1.14.4 - Fix critical CVEs
