@@ -1,7 +1,7 @@
 
 %if 0%{azl}
 # hard code versions due to ADO bug:58993948
-%global target_azl_build_kernel_version 6.12.57.1
+%global target_azl_build_kernel_version 6.18.0.1
 %global target_kernel_release 1
 %global target_kernel_version_full %{target_azl_build_kernel_version}-%{target_kernel_release}%{?dist}
 %global release_suffix _%{target_azl_build_kernel_version}.%{target_kernel_release}
@@ -36,7 +36,7 @@
 Name:		 mft_kernel-hwe
 Summary:	 %{name} Kernel Module for the %{KVERSION} kernel
 Version:	 4.30.0
-Release:	 24%{release_suffix}%{?dist}
+Release:	 25%{release_suffix}%{?dist}
 License:	 Dual BSD/GPLv2
 Group:		 System Environment/Kernel
 BuildRoot:	 /var/tmp/%{name}-%{version}-build
@@ -212,6 +212,9 @@ find %{buildroot} -type f -name \*.ko -exec %{__strip} -p --strip-debug --discar
 %endif
 
 %changelog
+* Sun Dec 07 2025 Siddharth Chintamaneni <sidchintamaneni@gmail.com> - 4.30.0-25_6.18.0.1.1
+- Bump to match kernel-hwe
+
 * Wed Nov 05 2025 Siddharth Chintamaneni <sidchintamaneni@gmail.com> - 4.30.0-24_6.12.57.1.1
 - Bump to match kernel-hwe
 

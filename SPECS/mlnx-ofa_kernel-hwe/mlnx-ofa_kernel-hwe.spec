@@ -28,7 +28,7 @@
 
 %if 0%{azl}
 # hard code versions due to ADO bug:58993948
-%global target_azl_build_kernel_version 6.12.57.1
+%global target_azl_build_kernel_version 6.18.0.1
 %global target_kernel_release 1
 %global target_kernel_version_full %{target_azl_build_kernel_version}-%{target_kernel_release}%{?dist}
 %global release_suffix _%{target_azl_build_kernel_version}.%{target_kernel_release}
@@ -101,7 +101,7 @@
 Summary:	 Infiniband HCA Driver
 Name:		 mlnx-ofa_kernel-hwe
 Version:	 24.10
-Release:	 24%{release_suffix}%{?dist}
+Release:	 25%{release_suffix}%{?dist}
 License:	 GPLv2
 Url:		 http://www.mellanox.com/
 Group:		 System Environment/Base
@@ -444,6 +444,9 @@ update-alternatives --remove \
 %{_prefix}/src/ofa_kernel/%{_arch}/[0-9]*
 
 %changelog
+* Sun Dec 07 2025 Siddharth Chintamaneni <sidchintamaneni@gmail.com> - 24.10-25_6.18.0.1.1
+- Bump to match kernel-hwe
+
 * Wed Nov 05 2025 Siddharth Chintamaneni <sidchintamaneni@gmail.com> - 24.10-24_6.12.57.1.1
 - Bump to match kernel-hwe
 
