@@ -2,7 +2,7 @@
   "Signatures": {
     "azurelinux-ca-20230216.pem": "d545401163c75878319f01470455e6bc18a5968e39dd964323225e3fe308849b",
     "config":"eee6e0eaacb50a6dd31ed3abf3f971cc59ca1846c035303eaf866d31f949b4b9",
-    "config_aarch64": "e2d445a45d2bde92a03183b1fca617bde22acbb66f793a69cca4a0e383ff9edd",
+    "config_aarch64": "f57ee54faa93620f9bec4f80a9fba9df7bda44b309ed45a3504ca6b27e4941f2",
     "cpupower": "d7518767bf2b1110d146a49c7d42e76b803f45eb8bd14d931aa6d0d346fae985",
     "cpupower.service": "b057fe9e5d0e8c36f485818286b80e3eba8ff66ff44797940e99b1fd5361bb98",
     "kernel-hwe-6.18.0.1.tar.gz": "1cf1ce87ebff71f5955bafe383c369db70ebe25effafbaebbb10c1581e0b0191"
