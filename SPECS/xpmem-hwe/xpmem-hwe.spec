@@ -13,7 +13,7 @@
 %global KVERSION %{target_kernel_version_full}
 %global K_SRC /lib/modules/%{target_kernel_version_full}/build
 
-%{!?_mofed_full_version: %define _mofed_full_version 25.07-7%{release_suffix}%{?dist}}
+%{!?_mofed_full_version: %define _mofed_full_version 26.01-1%{release_suffix}%{?dist}}
 
 # %{!?KVERSION: %global KVERSION %(uname -r)}
 %{!?KVERSION: %global KVERSION %{target_kernel_version_full}}
@@ -22,7 +22,7 @@
 %{!?K_SRC: %global K_SRC /lib/modules/%{KVERSION}/build}
 # A separate variable _release is required because of the odd way the
 # script append_number_to_package_release.sh works:
-%global _release 1.2507097
+%global _release 1.2601100
 
 %bcond_without kernel_only
 
@@ -42,8 +42,8 @@
 
 Summary:	 Cross-partition memory
 Name:		 xpmem-hwe
-Version:	 2.7.4
-Release:	 31%{release_suffix}%{?dist}
+Version:	 2601.0.9
+Release:	 1%{release_suffix}%{?dist}
 License:	 GPLv2 and LGPLv2.1
 Group:		 System Environment/Libraries
 Vendor:          Microsoft Corporation
@@ -52,7 +52,7 @@ BuildRequires:	 automake autoconf
 URL:		 https://github.com/openucx/xpmem
 # DOCA OFED feature sources come from the following MLNX_OFED_SRC tgz.
 # This archive contains the SRPMs for each feature and each SRPM includes the source tarball and the SPEC file.
-# https://linux.mellanox.com/public/repo/doca/3.1.0/SOURCES/mlnx_ofed/MLNX_OFED_SRC-25.07-0.9.7.0.tgz
+# https://linux.mellanox.com/public/repo/doca/3.3.0/SOURCES/mlnx_ofed/MLNX_OFED_SRC-26.01-1.0.0.0.tgz
 Source0:         %{_distro_sources_url}/xpmem-%{version}.tar.gz
 
 # name gets a different value in subpackages
