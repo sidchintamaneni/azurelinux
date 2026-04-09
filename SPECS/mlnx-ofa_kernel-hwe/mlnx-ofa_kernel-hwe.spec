@@ -85,10 +85,9 @@
 
 %global base_name mlnx-ofa_kernel
 %{!?_name: %global _name %{base_name}-hwe}
-%{!?_version: %global _version 25.07}
-%{!?_release: %global _release OFED.25.07.0.9.7.1}
+%{!?_version: %global _version 26.01}
+%{!?_release: %global _release OFED.26.01.1.0.0.1}
 %global _kmp_rel %{_release}%{?_kmp_build_num}%{?_dist}
-%global MLNX_OFA_DRV_SRC 24.10-0.7.0
 
 %global utils_pname %{name}
 %global devel_pname %{name}-devel
@@ -101,14 +100,14 @@
 
 Summary:	 Infiniband HCA Driver
 Name:		 mlnx-ofa_kernel-hwe
-Version:	 25.07
-Release:	 7%{release_suffix}%{?dist}
+Version:	 26.01
+Release:	 1%{release_suffix}%{?dist}
 License:	 GPLv2
 Url:		 http://www.mellanox.com/
 Group:		 System Environment/Base
 # DOCA OFED feature sources come from the following MLNX_OFED_SRC tgz.
 # This archive contains the SRPMs for each feature and each SRPM includes the source tarball and the SPEC file.
-# https://linux.mellanox.com/public/repo/doca/3.1.0/SOURCES/mlnx_ofed/MLNX_OFED_SRC-25.07-0.9.7.0.tgz
+# https://linux.mellanox.com/public/repo/doca/3.3.0/SOURCES/mlnx_ofed/MLNX_OFED_SRC-26.01-1.0.0.0.tgz
 Source0:         %{_distro_sources_url}/mlnx-ofa_kernel-%{_version}.tgz
 
 BuildRoot:	 /var/tmp/%{name}-%{version}-build
@@ -141,7 +140,7 @@ BuildRequires: /usr/bin/perl
 %description
 InfiniBand "verbs", Access Layer  and ULPs.
 Utilities rpm.
-The driver sources are located at: http://www.mellanox.com/downloads/ofed/mlnx-ofa_kernel-%{MLNX_OFA_DRV_SRC}.tgz
+The driver sources are located at: http://www.mellanox.com/downloads/ofed/mlnx-ofa_kernel-%{_version}.tgz
 
 
 # build KMP rpms?
@@ -202,7 +201,7 @@ Conflicts: mlnx-ofa_kernel-modules
 %description -n %{non_kmp_pname}
 Core, HW and ULPs kernel modules
 Non-KMP format kernel modules rpm.
-The driver sources are located at: http://www.mellanox.com/downloads/ofed/mlnx-ofa_kernel-%{MLNX_OFA_DRV_SRC}.tgz
+The driver sources are located at: http://www.mellanox.com/downloads/ofed/mlnx-ofa_kernel-%{_version}.tgz
 %endif #end if "%{KMP}" == "1"
 
 %package -n %{devel_pname}
