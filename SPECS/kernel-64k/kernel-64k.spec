@@ -26,7 +26,7 @@
 
 Summary:        Linux Kernel
 Name:           kernel-64k
-Version:        6.6.138.1
+Version:        6.6.121.1
 Release:        1%{?dist}
 License:        GPLv2
 Vendor:         Microsoft Corporation
