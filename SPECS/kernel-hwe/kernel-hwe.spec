@@ -30,7 +30,7 @@
 
 Summary:        Linux Kernel
 Name:           kernel-hwe
-Version:        6.12.87.1
+Version:        6.12.89.1
 Release:        1%{?dist}
 License:        GPLv2
 Vendor:         Microsoft Corporation
