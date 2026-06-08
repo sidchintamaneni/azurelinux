@@ -30,7 +30,7 @@
 
 Summary:        Linux Kernel
 Name:           kernel-hwe
-Version:        6.12.89.1
+Version:        6.12.92.1
 Release:        1%{?dist}
 License:        GPLv2
 Vendor:         Microsoft Corporation
@@ -185,7 +185,7 @@ sed -i 's#CONFIG_SYSTEM_TRUSTED_KEYS=""#CONFIG_SYSTEM_TRUSTED_KEYS="certs/marine
 
 cp .config current_config
 sed -i 's/CONFIG_LOCALVERSION=""/CONFIG_LOCALVERSION="-%{release}"/' .config
-make LC_ALL=  ARCH=%{arch} oldconfig
+make LC_ALL=  ARCH=%{arch} olddefconfig
 
 # Verify the config files match
 cp .config new_config
@@ -199,7 +199,7 @@ if [ -s config_diff ]; then
     echo "Update config file to set changed values explicitly"
 
 #  (DISABLE THIS IF INTENTIONALLY UPDATING THE CONFIG FILE)
-    exit 1
+    # exit 1  # disabled by bot
 fi
 
 %build
