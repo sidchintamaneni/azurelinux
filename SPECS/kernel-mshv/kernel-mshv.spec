@@ -18,7 +18,7 @@
 Summary:        Mariner kernel that has MSHV Host support
 Name:           kernel-mshv
 Version:        6.18.58.mshv2
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2
 Group:          Development/Tools
 Vendor:         Microsoft Corporation
@@ -265,6 +265,11 @@ echo "initrd of kernel %{uname_r} removed" >&2
 %{_includedir}/perf/perf_dlfilter.h
 
 %changelog
+* Mon Nov 09 2026 Aadhar Agarwal <aadagarwal@microsoft.com> - 6.18.58.mshv2-3
+- Enable IPE and stock-equivalent dm-verity signature trust on x86_64
+- Backport the dedicated dm-verity verification keyring
+- Expose eligible read-only Btrfs backing devices to IPE
+
 * Wed Nov 04 2026 Jocelyn Berrendonner <jocelynb@microsoft.com> - 6.18.58.mshv2-2
 - x86_64: enable CONFIG_MLX5_SF and CONFIG_MLX5_VFIO_PCI for GPU and InfiniBand
   passthrough on L1VH hosts
